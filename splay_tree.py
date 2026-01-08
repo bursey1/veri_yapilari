@@ -1,268 +1,200 @@
 class Dugum:
-    """Splay Tree için düğüm sınıfı"""
     def __init__(self, anahtar):
-        self.anahtar = anahtar  # Düğümün değeri
-        self.sol = None  # Sol çocuk
-        self.sag = None  # Sağ çocuk
-        self.ebeveyn = None  # Ebeveyn düğüm
+        self.anahtar = anahtar  
+        self.sol = None  
+        self.sag = None 
+        self.ebeveyn = None  
 
 
 class SplayAgaci:
-    """Splay Tree veri yapısı implementasyonu"""
-    
     def __init__(self):
-        self.kok = None  # Ağacın kök düğümü
-    
+        self.kok = None  
+
     def _sola_dondur(self, yukari_cikacak):
-        """
-        Sol rotasyon işlemi
-        yukari_cikacak: Yukarı çıkarılacak düğüm (ebeveyninin yerine geçecek)
-        Bu düğüm ebeveyninin SAĞ çocuğu olmalıdır
+       
+        yukariya = yukari_cikacak  
+        asagiya = yukariya.ebeveyn 
         
-        Örnek:
-           ebeveyn              yukari_cikacak
-           /    \               /         \
-          A   yukari_cikacak   ebeveyn     C
-              /    \           /    \
-             B      C         A      B
-        """
-        yukariya = yukari_cikacak  # Yukarı çıkacak düğüm
-        asagiya = yukariya.ebeveyn  # Aşağı inecek düğüm
-        
-        asagiya.sag = yukariya.sol  # Yukarıya'nın sol alt ağacı, aşağıya'nın sağ alt ağacı olur
+        asagiya.sag = yukariya.sol 
         
         if yukariya.sol:
-            yukariya.sol.ebeveyn = asagiya  # Alt ağacın ebeveynini güncelle
+            yukariya.sol.ebeveyn = asagiya  
         
-        yukariya.ebeveyn = asagiya.ebeveyn  # Yukarıya'nın ebeveyni, aşağıya'nın ebeveyni olur
+        yukariya.ebeveyn = asagiya.ebeveyn  
         
-        # Aşağıya'nın ebeveynine göre bağlantıları güncelle
         if not asagiya.ebeveyn:
-            self.kok = yukariya  # Aşağıya kök ise, yukarıya yeni kök olur
+            self.kok = yukariya  
         elif asagiya == asagiya.ebeveyn.sol:
-            asagiya.ebeveyn.sol = yukariya  # Aşağıya sol çocuk ise, yukarıya sol çocuk olur
+            asagiya.ebeveyn.sol = yukariya  
         else:
-            asagiya.ebeveyn.sag = yukariya  # Aşağıya sağ çocuk ise, yukarıya sağ çocuk olur
+            asagiya.ebeveyn.sag = yukariya  
         
-        yukariya.sol = asagiya  # Aşağıya, yukarıya'nın sol çocuğu olur
-        asagiya.ebeveyn = yukariya  # Aşağıya'nın ebeveyni yukarıya olur
+        yukariya.sol = asagiya  
+        asagiya.ebeveyn = yukariya  
     
     def _saga_dondur(self, yukari_cikacak):
-        """
-        Sağ rotasyon işlemi
-        yukari_cikacak: Yukarı çıkarılacak düğüm (ebeveyninin yerine geçecek)
-        Bu düğüm ebeveyninin SOL çocuğu olmalıdır
         
-        Örnek:
-              ebeveyn           yukari_cikacak
-              /    \            /         \
-       yukari_cikacak C        A        ebeveyn
-          /    \                        /    \
-         A      B                      B      C
-        """
-        yukariya = yukari_cikacak  # Yukarı çıkacak düğüm
-        asagiya = yukariya.ebeveyn  # Aşağı inecek düğüm
+        yukariya = yukari_cikacak  
+        asagiya = yukariya.ebeveyn  
         
-        asagiya.sol = yukariya.sag  # Yukarıya'nın sağ alt ağacı, aşağıya'nın sol alt ağacı olur
+        asagiya.sol = yukariya.sag  
         
         if yukariya.sag:
-            yukariya.sag.ebeveyn = asagiya  # Alt ağacın ebeveynini güncelle
+            yukariya.sag.ebeveyn = asagiya 
         
-        yukariya.ebeveyn = asagiya.ebeveyn  # Yukarıya'nın ebeveyni, aşağıya'nın ebeveyni olur
+        yukariya.ebeveyn = asagiya.ebeveyn  
         
-        # Aşağıya'nın ebeveynine göre bağlantıları güncelle
         if not asagiya.ebeveyn:
-            self.kok = yukariya  # Aşağıya kök ise, yukarıya yeni kök olur
+            self.kok = yukariya  
         elif asagiya == asagiya.ebeveyn.sag:
-            asagiya.ebeveyn.sag = yukariya  # Aşağıya sağ çocuk ise, yukarıya sağ çocuk olur
+            asagiya.ebeveyn.sag = yukariya  
         else:
-            asagiya.ebeveyn.sol = yukariya  # Aşağıya sol çocuk ise, yukarıya sol çocuk olur
+            asagiya.ebeveyn.sol = yukariya  
         
-        yukariya.sag = asagiya  # Aşağıya, yukarıya'nın sağ çocuğu olur
-        asagiya.ebeveyn = yukariya  # Aşağıya'nın ebeveyni yukarıya olur
+        yukariya.sag = asagiya  
+        asagiya.ebeveyn = yukariya 
     
     def _splay(self, dugum):
-        """
-        Splay operasyonu - verilen düğümü köke getirir
-        Üç durum vardır: Zig, Zig-Zig ve Zig-Zag
-        """
-        while dugum.ebeveyn:  # Düğüm kök olana kadar devam et
-            ebeveyn = dugum.ebeveyn  # Ebeveyn düğüm
-            buyukebeveyn = ebeveyn.ebeveyn  # Büyükebeveyn düğüm
+       
+        while dugum.ebeveyn: 
+            ebeveyn = dugum.ebeveyn  
+            buyukebeveyn = ebeveyn.ebeveyn 
             
             if not buyukebeveyn:
-                # ZIG durumu: Sadece bir rotasyon gerekli (düğüm kökün çocuğu)
                 if dugum == ebeveyn.sol:
-                    self._saga_dondur(dugum)  # Düğüm sola, sağa döndür
+                    self._saga_dondur(dugum) 
                 else:
-                    self._sola_dondur(dugum)  # Düğüm sağa, sola döndür
+                    self._sola_dondur(dugum)  
             
             elif dugum == ebeveyn.sol and ebeveyn == buyukebeveyn.sol:
-                # ZIG-ZIG durumu (sol-sol): İki sağa rotasyon
-                # Önce ebeveyn yukarı çık, sonra düğüm yukarı çık
-                self._saga_dondur(ebeveyn)  # Önce ebeveyn
-                self._saga_dondur(dugum)  # Sonra düğüm
+              
+                self._saga_dondur(ebeveyn) 
+                self._saga_dondur(dugum)  
             
             elif dugum == ebeveyn.sag and ebeveyn == buyukebeveyn.sag:
-                # ZIG-ZIG durumu (sağ-sağ): İki sola rotasyon
-                # Önce ebeveyn yukarı çık, sonra düğüm yukarı çık
-                self._sola_dondur(ebeveyn)  # Önce ebeveyn
-                self._sola_dondur(dugum)  # Sonra düğüm
+            
+                self._sola_dondur(ebeveyn)  
+                self._sola_dondur(dugum)  
             
             elif dugum == ebeveyn.sag and ebeveyn == buyukebeveyn.sol:
-                # ZIG-ZAG durumu (sol-sağ): Sol sonra sağ rotasyon
-                # Düğüm iki kez yukarı çıkar
-                self._sola_dondur(dugum)  # Önce sol rotasyon (düğüm yukarı)
-                self._saga_dondur(dugum)  # Sonra sağ rotasyon (düğüm tekrar yukarı)
+    
+                self._sola_dondur(dugum)  
+                self._saga_dondur(dugum)  
             
             else:
-                # ZIG-ZAG durumu (sağ-sol): Sağ sonra sol rotasyon
-                # Düğüm iki kez yukarı çıkar
-                self._saga_dondur(dugum)  # Önce sağ rotasyon (düğüm yukarı)
-                self._sola_dondur(dugum)  # Sonra sol rotasyon (düğüm tekrar yukarı)
+
+                self._saga_dondur(dugum)  
+                self._sola_dondur(dugum)  
     
     def ekle(self, anahtar):
-        """
-        Yeni bir düğüm ekler ve onu köke splayler
-        """
-        # Standart BST ekleme işlemi
-        yeni_dugum = Dugum(anahtar)  # Yeni düğüm oluştur
+    
+    
+        yeni_dugum = Dugum(anahtar) 
         
         if not self.kok:
-            self.kok = yeni_dugum  # Ağaç boşsa, yeni düğüm kök olur
+            self.kok = yeni_dugum  
             return
         
-        mevcut = self.kok  # Gezinme için başlangıç noktası
+        mevcut = self.kok  
         
         while True:
             if anahtar < mevcut.anahtar:
-                # Değer küçükse sola git
                 if not mevcut.sol:
-                    mevcut.sol = yeni_dugum  # Sol boşsa, ekle
+                    mevcut.sol = yeni_dugum  
                     yeni_dugum.ebeveyn = mevcut
                     break
                 mevcut = mevcut.sol
             else:
-                # Değer büyük veya eşitse sağa git
                 if not mevcut.sag:
-                    mevcut.sag = yeni_dugum  # Sağ boşsa, ekle
+                    mevcut.sag = yeni_dugum 
                     yeni_dugum.ebeveyn = mevcut
                     break
                 mevcut = mevcut.sag
         
-        # Eklenen düğümü köke splay et
         self._splay(yeni_dugum)
     
     def ara(self, anahtar):
-        """
-        Belirtilen anahtarı arar
-        Bulunan düğümü köke splayler
-        Bulunamazsa, en yakın düğümü splayler
-        """
+    
         if not self.kok:
-            return None  # Ağaç boş
+            return None  
         
-        mevcut = self.kok  # Arama başlangıcı
-        son_ziyaret = None  # Son ziyaret edilen düğüm
+        mevcut = self.kok  
+        son_ziyaret = None  
         
         while mevcut:
-            son_ziyaret = mevcut  # Son düğümü kaydet
+            son_ziyaret = mevcut  
             
             if anahtar == mevcut.anahtar:
                 # Anahtar bulundu
-                self._splay(mevcut)  # Bulunan düğümü splay et
+                self._splay(mevcut) 
                 return mevcut
             elif anahtar < mevcut.anahtar:
-                mevcut = mevcut.sol  # Sola git
+                mevcut = mevcut.sol  
             else:
-                mevcut = mevcut.sag  # Sağa git
+                mevcut = mevcut.sag 
         
-        # Anahtar bulunamadı, en yakın düğümü splay et
+    
         if son_ziyaret:
             self._splay(son_ziyaret)
         
         return None
     
     def sil(self, anahtar):
-        """
-        Belirtilen anahtarı ağaçtan siler
-        """
-        dugum = self.ara(anahtar)  # Düğümü ara (ve splay et)
+       
+        dugum = self.ara(anahtar)  
         
         if not dugum:
-            return False  # Düğüm bulunamadı
+            return False 
         
-        # Silme işlemi: düğümü köke splayledik
+       
         if not dugum.sol:
-            # Sol alt ağaç yoksa, sağ alt ağacı kök yap
+            
             self.kok = dugum.sag
             if self.kok:
                 self.kok.ebeveyn = None
         elif not dugum.sag:
-            # Sağ alt ağaç yoksa, sol alt ağacı kök yap
+            
             self.kok = dugum.sol
             if self.kok:
                 self.kok.ebeveyn = None
         else:
-            # Her iki alt ağaç da var
-            # Sol alt ağacı kök yap
+           
             sol_alt_agac = dugum.sol
             sag_alt_agac = dugum.sag
             
             self.kok = sol_alt_agac
             self.kok.ebeveyn = None
             
-            # Sol alt ağacın en büyük elemanını bul (en sağdaki)
             en_buyuk = sol_alt_agac
             while en_buyuk.sag:
                 en_buyuk = en_buyuk.sag
             
-            # En büyük elemanı splay et
             self._splay(en_buyuk)
             
-            # Sağ alt ağacı, yeni kökün sağ çocuğu yap
             self.kok.sag = sag_alt_agac
             sag_alt_agac.ebeveyn = self.kok
         
         return True
-    
+
     def minimum_bul(self):
-        """
-        Ağaçtaki en küçük değeri bulur ve onu köke splayler
-        """
         if not self.kok:
             return None
-        
         mevcut = self.kok
-        # En soldaki düğüme git
         while mevcut.sol:
             mevcut = mevcut.sol
-        
-        # En küçük düğümü splay et
         self._splay(mevcut)
         return mevcut.anahtar
-    
     def maksimum_bul(self):
-        """
-        Ağaçtaki en büyük değeri bulur ve onu köke splayler
-        """
         if not self.kok:
             return None
-        
         mevcut = self.kok
-        # En sağdaki düğüme git
         while mevcut.sag:
             mevcut = mevcut.sag
-        
-        # En büyük düğümü splay et
         self._splay(mevcut)
         return mevcut.anahtar
     
     def sirali_dolasma(self, dugum=None, sonuc=None):
-        """
-        Inorder (sıralı) dolaşma: Sol - Kök - Sağ
-        Ağacı küçükten büyüğe sıralı şekilde döndürür
-        """
+      
         if sonuc is None:
             sonuc = []
             dugum = self.kok
@@ -283,9 +215,9 @@ class SplayAgaci:
             dugum = self.kok
         
         if dugum:
-            sonuc.append(dugum.anahtar)  # Kök
-            self.oncelikli_dolasma(dugum.sol, sonuc)  # Sol alt ağaç
-            self.oncelikli_dolasma(dugum.sag, sonuc)  # Sağ alt ağaç
+            sonuc.append(dugum.anahtar) 
+            self.oncelikli_dolasma(dugum.sol, sonuc)  
+            self.oncelikli_dolasma(dugum.sag, sonuc)
         
         return sonuc
     
@@ -298,14 +230,14 @@ class SplayAgaci:
             dugum = self.kok
         
         if dugum:
-            self.sonraki_dolasma(dugum.sol, sonuc)  # Sol alt ağaç
-            self.sonraki_dolasma(dugum.sag, sonuc)  # Sağ alt ağaç
-            sonuc.append(dugum.anahtar)  # Kök
+            self.sonraki_dolasma(dugum.sol, sonuc)  
+            self.sonraki_dolasma(dugum.sag, sonuc)  
+            sonuc.append(dugum.anahtar) 
         
         return sonuc
 
 
-# Örnek kullanım
+
 if __name__ == "__main__":
     # Yeni bir Splay Tree oluştur
     agac = SplayAgaci()
@@ -323,14 +255,14 @@ if __name__ == "__main__":
     print("Kök düğüm:", agac.kok.anahtar if agac.kok else None)
     print()
     
-    # Arama işlemi
+   
     print("30 aranıyor...")
     sonuc = agac.ara(30)
     print("Bulundu!" if sonuc else "Bulunamadı!")
     print("Arama sonrası kök:", agac.kok.anahtar)
     print()
     
-    # Minimum ve maksimum bulma
+    
     print("Minimum değer:", agac.minimum_bul())
     print("Min bulma sonrası kök:", agac.kok.anahtar)
     print()
@@ -339,7 +271,7 @@ if __name__ == "__main__":
     print("Max bulma sonrası kök:", agac.kok.anahtar)
     print()
     
-    # Silme işlemi
+    
     print("20 siliniyor...")
     agac.sil(20)
     print("Silme sonrası sıralı dolaşma:", agac.sirali_dolasma())
@@ -351,7 +283,7 @@ if __name__ == "__main__":
     print("Arama sonrası kök:", agac.kok.anahtar)
     print()
     
-    # Ağaç yapısını göster
+   
     print("=== Detaylı Test ===")
     agac2 = SplayAgaci()
     elemanlar = [50, 30, 70, 20, 40, 60, 80]
